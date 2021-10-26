@@ -100,7 +100,6 @@ foreach my $term (@$obo_terms) {
 }
 
 my %line_hash;
-my $gaf_format;
 
 my $line_number;
 
@@ -109,6 +108,7 @@ my @files = glob("$directory/*.assoc");
 foreach my $infile (@files) {
 		open (INFILE, $infile);
 		print "working on file $infile\n";
+		my $gaf_format = 1;
 		$line_number = 0;
 		while(<INFILE>) {
 				my $line = $_;
@@ -124,18 +124,23 @@ foreach my $infile (@files) {
 				
 				
 				#my ($db,$db_id,$db_symbol,$qual,$ont_id,$db_ref,$ev,$with,$aspect,$db_obj_name,$db_obj_syn,$db_obj_type,$taxon,$date,$assigned_by,$annot_ext,$gp_form_id) = split("\t", $line);
-				my @col_array = split("\t", $line);
+				my @col_array = split("\t", $line, -1);
+				
+				# detect empty lines
+				if(!$col_array[0]) {
+						print "$infile:\tempty line on line $line_number\n";
+						next;
+				}
+				
+				#determine gaf version
+				if($line_number == 1 && $col_array[0] =~ /gaf-version:\s+2/) {
+						$gaf_format = "2";
+				}
 				
 				#skip comments
 				next if($col_array[0] =~ m/^!/);
 				
-				#determine gaf version
-				if(defined($col_array[15])) {
-						$gaf_format = "2";
-				}else{
-						$gaf_format = "1";
-				}
-		
+				
 				# deal with each element separately looking for issues
 				my $db = $col_array[0];
 				if($db eq "" || $db eq "-"){
@@ -206,18 +211,25 @@ foreach my $infile (@files) {
 				}
 				
 				my $date = $col_array[13];
-				if($date !~ /\d{8}/){
-						print "$infile:\tdate column is not properly formatted on line $line_number\n";
+				if($date !~ /^\d{8}$/ || $date !~ /^20/){
+						print "$infile:\tdate column is not properly formatted (YYYYMMDD) on line $line_number\n";
 				}
 				
 				my $assigned_by = $col_array[14];
 				#Can't be empty if only gaf 1.0 format
-				if(!defined($assigned_by) && $gaf_format eq "1") {
+				if(!defined($assigned_by) && $gaf_format ne "2") {
 						print "$infile:\tthis appears to be gaf 1.0 format and assigned by column is empty on line $line_number\n";
 				}
 		
 				
 				if($gaf_format eq "2") {
+						# must have 17 columns
+						my $num_columns = @col_array;
+						if ($num_columns != 17) {
+								print "$infile:\tthere must be exactly 17 columns on line $line_number\n";
+								next;
+						}
+						
 						my $annot_ext = $col_array[15];
 						#spaces not allowed
 						if ($annot_ext =~ /\s/) {
@@ -226,16 +238,16 @@ foreach my $infile (@files) {
 						
 						my $gp_form_id = $col_array[16];
 						#needs have a colon
-						if (defined($gp_form_id) && $gp_form_id !~ /:/) {
+						if ($gp_form_id !~ /^$/ && $gp_form_id !~ /:/) {
 								print "$infile:\tgene product form id (column 17) needs to have a colon if not empty on line $line_number\n";
 						}
-						
+
 						
 				}
 				
 		}			
-				
+		close(INFILE);		
 		
 }
-close(INFILE);
+
 
