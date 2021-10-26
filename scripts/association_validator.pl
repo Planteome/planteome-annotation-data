@@ -22,20 +22,20 @@ my $directory = $ARGV[0];
 my %obs_terms_hash;
 
 # define external ontology files
-my $EO_filename = "plant-environment-ontology.obo";
+my $PECO_filename = "peco.obo";
 my $PO_filename = "plant-ontology.obo";
 my $GO_filename = "go.obo";
 my $TO_filename = "plant-trait-ontology.obo";
 
-my $EO_file_url = "http://github.com/Planteome/plant-environment-ontology/raw/master/$EO_filename";
+my $PECO_file_url = "http://github.com/Planteome/plant-experimental-conditions-ontology/raw/master/$PECO_filename";
 my $PO_file_url = "http://github.com/Planteome/plant-ontology/raw/master/$PO_filename";
 my $GO_file_url = "http://purl.obolibrary.org/obo/$GO_filename";
 my $TO_file_url = "http://github.com/Planteome/plant-trait-ontology/raw/master/$TO_filename";
 
 my %ont_files_hash;
 
-$ont_files_hash{'EO_file'}->{'filename'} = $EO_filename;
-$ont_files_hash{'EO_file'}->{'url'} = $EO_file_url;
+$ont_files_hash{'PECO_file'}->{'filename'} = $PECO_filename;
+$ont_files_hash{'PECO_file'}->{'url'} = $PECO_file_url;
 $ont_files_hash{'PO_file'}->{'filename'} = $PO_filename;
 $ont_files_hash{'PO_file'}->{'url'} = $PO_file_url;
 $ont_files_hash{'GO_file'}->{'filename'} = $GO_filename;
@@ -46,8 +46,8 @@ $ont_files_hash{'TO_file'}->{'url'} = $TO_file_url;
 my $key;
 if($directory =~ /^go/){
 	$key = 'GO_file';
-}elsif($directory =~ /^eo/) {
-		$key = 'EO_file';
+}elsif($directory =~ /^peco/) {
+		$key = 'PECO_file';
 }elsif($directory =~ /^po/) {
 		$key = 'PO_file';
 }elsif($directory =~ /^to/){
