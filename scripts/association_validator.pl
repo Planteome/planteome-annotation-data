@@ -184,8 +184,8 @@ foreach my $infile (@files) {
 				}
 				
 				my $with = $col_array[7];
-				if ($db_ref =~ /\s/){
-						print "$infile:\tspaces are not allowed in reference list on line $line_number\n";
+				if ($with =~ /\s/){
+						print "$infile:\tspaces are not allowed in with/from list on line $line_number\n";
 				}
 				
 				my $aspect = $col_array[8];
