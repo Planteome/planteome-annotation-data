@@ -175,7 +175,7 @@ foreach my $infile (@files) {
 				#}elsif ($db_ref !~ /:/){
 				#		print "reference not properly formatted, missing colon on line $line_number\n";
 				}elsif ($db_ref =~ /\s/){
-						print "$infile:\tspaces are not allowed in reference list on line $line_number\n";
+						print "$infile:\tspaces are not allowed in reference list on line $line_number. Reference list is $db_ref\n";
 				}
 				
 				my $ev = $col_array[6];
@@ -226,7 +226,7 @@ foreach my $infile (@files) {
 						# must have 17 columns
 						my $num_columns = @col_array;
 						if ($num_columns != 17) {
-								print "$infile:\tthere must be exactly 17 columns on line $line_number\n";
+								print "$infile:\tthere must be exactly 17 columns on line $line_number. There are $num_columns\n";
 								next;
 						}
 						
