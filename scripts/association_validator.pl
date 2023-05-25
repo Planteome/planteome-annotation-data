@@ -89,13 +89,20 @@ my $ont = $parser->handler->graph;
 
 my $obo_terms = $ont->get_all_nodes;
 
-
+my %terms_aspect_hash;
+my %namespace_aspect_hash = ( 'biological_process' => 'P',
+	'molecular_function' => 'F',
+	'cellular_component' => 'C',);
 
 foreach my $term (@$obo_terms) {
+	my $id = $term->acc;
+	my $name = $term->name;
 	if ($term->is_obsolete){
-		my $id = $term->acc;
-		my $name = $term->name;
 		$obs_terms_hash{$id} = $name;
+	}
+	if ($id =~ m/^GO/) {
+		my $aspect = $term->namespace;
+		$terms_aspect_hash{$id} = $namespace_aspect_hash{$aspect};
 	}
 }
 
@@ -191,6 +198,8 @@ foreach my $infile (@files) {
 				my $aspect = $col_array[8];
 				if($aspect eq "" || $aspect eq "-"){
 						print "$infile:\taspect not defined on line $line_number for term $ont_id\n";
+				}elsif (defined($terms_aspect_hash{$ont_id}) && $aspect ne $terms_aspect_hash{$ont_id}) {
+						print "$infile:\tincorrect aspect on line $line_number for term $ont_id\n";
 				}
 				
 				my $db_obj_name = $col_array[9];
