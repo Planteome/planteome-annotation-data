@@ -44,13 +44,13 @@ $ont_files_hash{'TO_file'}->{'filename'} = $TO_filename;
 $ont_files_hash{'TO_file'}->{'url'} = $TO_file_url;
 
 my $key;
-if($directory =~ /^go/){
+if($directory =~ /go/){
 	$key = 'GO_file';
-}elsif($directory =~ /^peco/) {
+}elsif($directory =~ /peco/) {
 		$key = 'PECO_file';
-}elsif($directory =~ /^po/) {
+}elsif($directory =~ /po/) {
 		$key = 'PO_file';
-}elsif($directory =~ /^to/){
+}elsif($directory =~ /to/){
 		$key = 'TO_file';
 }else{
 		print "ontology undetermined\n";
